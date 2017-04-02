@@ -8,10 +8,10 @@ void mouseDragged() {
   deltaX=(mouseX-pmouseX);
   deltaY=(pmouseY-mouseY);
 
-  rotZ+=map(deltaX, -height, height, -2*PI, 2*PI)*coef;
-  rotX+=map(deltaY, -width, width, -2*PI, 2*PI)*coef;
+  rotZ+=map(deltaX, -displayHeight, displayHeight, -2*PI, 2*PI)*coef;
+  rotX+=map(deltaY, -displayWidth, displayWidth, -2*PI, 2*PI)*coef;
   if (rotX>PI/3)
-    rotX=PI/3;
+    rotX=PI/3; 
   else if (rotX<-PI/3)
     rotX=-PI/3;
   if (rotZ>PI/3)
@@ -21,8 +21,11 @@ void mouseDragged() {
 }
 
 void mouseClicked() {
-  if (shift) 
-    cyl.add(new PVector(mouseX, mouseY, 0));
+  if (shift) {
+   if ( (mouseX-displayWidth/2+cylinderBaseSize)<boxX/2 && (mouseX-displayWidth/2-cylinderBaseSize)>-boxX/2 &&  (mouseY-displayHeight/2+cylinderBaseSize)<boxZ/2 && (mouseY-displayHeight/2-cylinderBaseSize)>-boxZ/2) {
+      cyl.add(new PVector(mouseX, mouseY, 0));
+    }
+  }
 }
 
 void mouseWheel(MouseEvent event) {

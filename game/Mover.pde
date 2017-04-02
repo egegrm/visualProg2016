@@ -24,15 +24,17 @@ class Mover {
   }
   
   void collisions(){
-    PVector normalForce=new PVector(0,0,0);
+    PVector normalForce= new PVector(0,0,0);
     PVector pos=new PVector(location.x,0,location.z);
      for(int ind=0; ind<cyl.size();ind++){
      PVector v=cyl.get(ind);
-     PVector u=new PVector(v.x -width/2.0, 0, v.y-height/2.0);
+     PVector u=new PVector(v.x -displayWidth/2.0, 0, v.y-displayHeight/2.0);
      float dist=u.dist(pos);
      if(dist < cylinderBaseSize + ray*2){
+       lpw=velocity.mag();
+       score += lpw;
        PVector normal = new PVector(pos.x - u.x, 0, pos.z - u.z).normalize(); 
-       location = u.copy().add(normal.copy().mult(cylinderBaseSize+ray*2));
+       location = u.copy().add(normal.copy().mult(cylinderBaseSize+ray*2+ray/10));
        velocity.sub(normal.mult(2*velocity.dot(normal)));
      }
    }
@@ -72,10 +74,13 @@ class Mover {
 
 
   void checkEdges() {
+    boolean touched=false;
     if (location.x > boxX/2) {
+      touched=true;
       location.x = boxX/2;
       velocity.x=-velocity.x*bounce;
     } else if (location.x < -(boxX/2)) {
+      touched=true;
       location.x = -(boxX/2);
       velocity.x=-velocity.x*bounce;
     }
@@ -86,11 +91,19 @@ class Mover {
     }
 
     if (location.z<-(boxZ/2)) {
+      touched=true;
       velocity.z=-velocity.z*bounce;
       location.z=-(boxZ/2);
     } else if (location.z>boxZ/2) {
+      touched=true;
       velocity.z=-velocity.z*bounce;
       location.z=(boxZ/2);
+    }
+    
+    if(touched){
+      lpw=-m.velocity.mag();
+      score +=lpw;
+      score=max(score,0);
     }
   }
 }

@@ -1,16 +1,17 @@
 float depth = 2000;
-float boxX=200;
-float boxY=10;
-float boxZ=200;
+int boxX=300;
+int boxY=10;
+int boxZ=300;
 
 boolean shift=false;
 Mover m=new Mover();
 ArrayList<PVector> cyl=new ArrayList();
 
 void settings() {
-  size(500, 500, P3D);
+  size(displayWidth, displayHeight, P3D);
 }
 void setup() {
+  setupSurfaces();
   setupCyl();
 }
 
@@ -18,7 +19,8 @@ void draw() {
   background(200);
   //ambientLight(50, 100, 100);
   if (!shift) {
-    translate(width/2, height/2, 0);
+    drawSurfaces();
+    translate(displayWidth/2, displayHeight/2, 0);
     rotateX(rotX);
     rotateZ(rotZ);
     box(boxX, boxY, boxZ);
@@ -30,7 +32,7 @@ void draw() {
     
   }
   else {  
-    translate(width/2, height/2, 0);
+    translate(displayWidth/2, displayHeight/2, 0);
     beginShape();
     vertex(-boxX/2, -boxZ/2);
     vertex(boxX/2, -boxZ/2);
