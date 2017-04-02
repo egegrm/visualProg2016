@@ -1,45 +1,62 @@
 float depth = 2000;
-float boxX=200;
-float boxY=10;
-float boxZ=200;
 
 boolean shift=false;
 Mover m=new Mover();
 ArrayList<PVector> cyl=new ArrayList();
+Cylinder cylinder;
+Board board;
+DataView dataView;
+ArrayList<Float> scores = new ArrayList<Float>();
+int tickTime = 0;
+float totalScore = 0;
+float lastScore = 0;
+
+HScrollbar scrollbar;
 
 void settings() {
-  size(500, 500, P3D);
+  size(1080, 720, P3D);
 }
 void setup() {
-  setupCyl();
+  cylinder = new Cylinder();
+  board = new Board(300,10,300);
+  dataView = new DataView(width, 150, 0, height-150, 400);
+  scrollbar = new HScrollbar (260, 700, 300, 10);
 }
 
 void draw() {
+  tickTime++;
+  
+  if(tickTime % 50 == 0){
+        scores.add(totalScore); 
+  }
   background(200);
   //ambientLight(50, 100, 100);
   if (!shift) {
     translate(width/2, height/2, 0);
     rotateX(rotX);
     rotateZ(rotZ);
-    box(boxX, boxY, boxZ);
+    board.display();
     m.update();
     m.checkEdges();
     m.display();
     for(PVector v: cyl)
-      drawCyl3D(v);
+      cylinder.drawCyl3D(v);
     
+    dataView.draw();
+    scrollbar.update();
+    scrollbar.display();
   }
   else {  
     translate(width/2, height/2, 0);
     beginShape();
-    vertex(-boxX/2, -boxZ/2);
-    vertex(boxX/2, -boxZ/2);
-    vertex(boxX/2,boxZ/2);
-    vertex(-boxX/2, boxZ/2);
+    vertex(-board.boardWidth/2, -board.boardDepth/2);
+    vertex(board.boardWidth/2, -board.boardDepth/2);
+    vertex(board.boardWidth/2,board.boardDepth/2);
+    vertex(-board.boardWidth/2, board.boardDepth/2);
     endShape(CLOSE);
     m.display2D();
-    drawMovCyl();
+    cylinder.drawMovCyl();
     for(PVector v : cyl)
-      drawCyl(v);
+      cylinder.drawCyl(v);
   }
 }

@@ -1,10 +1,11 @@
 class Mover {
-  float ray=5;
-  float gravityConst=3;
+  float ray=12;
+  float gravityConst=5;
   float normalForce=1;
   float mu=2;
   float frictionNorm=normalForce*mu;
-  float bounce=0.90;
+  float bounce=0.95;
+  static final color SPHERE_COLOR = #00ED70;
 
   PVector location;
   PVector gravity;
@@ -30,9 +31,11 @@ class Mover {
      PVector v=cyl.get(ind);
      PVector u=new PVector(v.x -width/2.0, 0, v.y-height/2.0);
      float dist=u.dist(pos);
-     if(dist < cylinderBaseSize + ray*2){
+     if(dist < Cylinder.cylinderBaseSize + ray){
+       lastScore = totalScore;
+       totalScore += velocity.mag();
        PVector normal = new PVector(pos.x - u.x, 0, pos.z - u.z).normalize(); 
-       location = u.copy().add(normal.copy().mult(cylinderBaseSize+ray*2));
+       location = u.copy().add(normal.copy().mult(Cylinder.cylinderBaseSize+ray));
        velocity.sub(normal.mult(2*velocity.dot(normal)));
      }
    }
@@ -56,7 +59,7 @@ class Mover {
     stroke(0);
     strokeWeight(2);
     fill(145);
-    sphere(ray*2);
+    sphere(ray);
     popMatrix();
   }
   void display() {
@@ -65,32 +68,42 @@ class Mover {
     translate(location.x, location.y, location.z);
     stroke(0);
     strokeWeight(2);
-    fill(145);
-    sphere(ray*2);
+    fill(SPHERE_COLOR);
+    sphere(ray);
     popMatrix();
   }
 
 
   void checkEdges() {
-    if (location.x > boxX/2) {
-      location.x = boxX/2;
+    if (location.x > board.boardWidth/2) {
+      location.x = board.boardWidth/2;
       velocity.x=-velocity.x*bounce;
-    } else if (location.x < -(boxX/2)) {
-      location.x = -(boxX/2);
+      lastScore = totalScore;
+      totalScore -= velocity.mag();
+      
+    } else if (location.x < -(board.boardWidth/2)) {
+      location.x = -(board.boardWidth/2);
       velocity.x=-velocity.x*bounce;
+      
+      lastScore = totalScore;
+      totalScore -= velocity.mag();
     }
 
-    if (location.y>-(boxY/2)-ray*2) {
+    if (location.y>-(board.boardHeight/2)-ray) {
       velocity.y=-velocity.y*bounce;
-      location.y = -boxY/2-ray*2;
+      location.y = -board.boardHeight/2-ray;
     }
 
-    if (location.z<-(boxZ/2)) {
+    if (location.z<-(board.boardDepth/2)) {
       velocity.z=-velocity.z*bounce;
-      location.z=-(boxZ/2);
-    } else if (location.z>boxZ/2) {
+      location.z=-(board.boardDepth/2);
+      lastScore = totalScore;
+      totalScore -= velocity.mag();
+    } else if (location.z>board.boardDepth/2) {
       velocity.z=-velocity.z*bounce;
-      location.z=(boxZ/2);
+      location.z=(board.boardDepth/2);
+      lastScore = totalScore;
+      totalScore -= velocity.mag();
     }
   }
 }
